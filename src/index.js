@@ -1,5 +1,4 @@
 import { createStore } from 'redux';
-
 const form = document.querySelector("form");
 const input = document.querySelector("input");
 const ul = document.querySelector("ul");
@@ -23,7 +22,7 @@ const reducer = (state = [], action) => {
         ...state
       ];
     case DELETE_TODO:
-      return [];
+      return state.filter(todo => todo.id !== action.id);
     default:
       return state;
   }
@@ -31,8 +30,14 @@ const reducer = (state = [], action) => {
 
 const store = createStore(reducer);
 
+store.subscribe(() => { console.log(store.getState())});
+
 const dispatchAddToDo = text => { store.dispatch(addToDo(text)); }
-const dispatchDeleteToDo = id => { store.dispatch(deleteToDo(id)); }
+const dispatchDeleteToDo = e => { 
+  const id = parseInt(e.target.parentNode.id);
+  store.dispatch(deleteToDo(id)); 
+}
+
 
 const paintToDos = () => {
   const toDos = store.getState();
@@ -42,7 +47,7 @@ const paintToDos = () => {
     const li = document.createElement("li");
     const btn = document.createElement("button");
     btn.innerText = "DEL";
-    btn.addEventListener('click', dispatchDeleteToDo(id));
+    btn.addEventListener('click', dispatchDeleteToDo);
     li.id = id;
     li.innerText = text;
     li.appendChild(btn);
@@ -50,7 +55,6 @@ const paintToDos = () => {
   })
 }
 
-store.subscribe(() => { console.log(store.getState());});
 store.subscribe(paintToDos);
 
 
