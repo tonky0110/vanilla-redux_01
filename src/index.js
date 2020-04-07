@@ -11,7 +11,13 @@ const reducer = (state = [], action) => {
   console.log('action: ', action);
   switch(action.type){
     case ADD_TODO:
-      return [];
+      return [
+        ...state,
+        {
+          text: action.text,
+          id: Date.now()
+        }
+      ];
     case DELETE_TODO:
       return [];
     default:
@@ -21,7 +27,9 @@ const reducer = (state = [], action) => {
 
 const store = createStore(reducer);
 
-store.subscribe( )
+store.subscribe(() => {
+  console.log(store.getState());
+})
 
 const onsubmit = (e) => {
   e.preventDefault();
@@ -29,7 +37,7 @@ const onsubmit = (e) => {
   input.value = '';
   store.dispatch({
     type: ADD_TODO,
-    text: input.value
+    text: toDo
   });
 }
 form.addEventListener("submit", onsubmit);
